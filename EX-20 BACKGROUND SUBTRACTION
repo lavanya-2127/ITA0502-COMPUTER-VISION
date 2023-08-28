@@ -1,0 +1,25 @@
+import numpy as np
+import cv2
+def grabcut_segmentation(image, rect):
+    mask = np.zeros(image.shape[:2], np.uint8)
+    bgd_model = np.zeros((1, 65), np.float64)
+    fgd_model = np.zeros((1, 65), np.float64)
+    cv2.grabCut(image, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
+    foreground_mask = np.where((mask == 2) | (mask == 0), 0, 255).astype('uint8')
+    return foreground_mask
+video_path = "C:\\Users\\student\\Downloads\\_import_616e66e2e90167.37348782_FPpreview.mp4"
+cap = cv2.VideoCapture(video_path)
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    rect = (50, 50, frame.shape[1] - 100, frame.shape[0] - 100)
+    foreground_mask = grabcut_segmentation(frame, rect)
+    foreground = cv2.bitwise_and(frame, frame, mask=foreground_mask)
+    cv2.imshow('Original Frame', frame)
+    cv2.imshow('Foreground Mask', foreground_mask)
+    cv2.imshow('Extracted Foreground', foreground)
+    if cv2.waitKey(30) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
