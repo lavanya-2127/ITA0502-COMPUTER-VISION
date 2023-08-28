@@ -1,0 +1,15 @@
+import cv2
+bg_subtractor = cv2.createBackgroundSubtractorMOG2()
+video_path ="C:\\Users\\student\\Downloads\\_import_616e66e2e90167.37348782_FPpreview.mp4"
+cap = cv2.VideoCapture(video_path)
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    fg_mask = bg_subtractor.apply(frame)
+    cv2.imshow('Original Frame', frame)
+    cv2.imshow('Foreground Mask', fg_mask)
+    if cv2.waitKey(30) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
