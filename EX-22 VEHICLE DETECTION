@@ -1,0 +1,17 @@
+import cv2
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector(
+cap = cv2.VideoCapture("C:\\Users\\student\\Downloads\\BB_7304811a-06c2-47c6-b0bd-15b7844af717_FPpreview.mp4")
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+    boxes, _ = hog.detectMultiScale(frame, winStride=(8, 8), padding=(8, 8), scale=1.05)
+    for (x, y, w, h) in boxes:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (5, 175, 5), 10)
+    cv2.imshow('Vehicle Detection', frame)
+    if cv2.waitKey(1) == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+
