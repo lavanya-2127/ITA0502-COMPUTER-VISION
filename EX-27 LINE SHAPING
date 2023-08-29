@@ -1,0 +1,5 @@
+import turtle
+screen = turtle.Screen()
+t = turtle.Turtle()
+t.forward(200) 
+screen.exitonclick()
