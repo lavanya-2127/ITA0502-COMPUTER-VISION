@@ -1,17 +1,19 @@
 import cv2
-hog = cv2.HOGDescriptor()
-hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector(
-cap = cv2.VideoCapture("C:\\Users\\student\\Downloads\\BB_7304811a-06c2-47c6-b0bd-15b7844af717_FPpreview.mp4")
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-    boxes, _ = hog.detectMultiScale(frame, winStride=(8, 8), padding=(8, 8), scale=1.05)
-    for (x, y, w, h) in boxes:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (5, 175, 5), 10)
-    cv2.imshow('Vehicle Detection', frame)
-    if cv2.waitKey(1) == ord('q'):
-        break
-cap.release()
-cv2.destroyAllWindows()
-
+import numpy as np
+def vehicle_detection(video_path):
+    cap = cv2.VideoCapture(video_path)
+    fgbg = cv2.createBackgroundSubtractorMOG2()
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        fgmask = fgbg.apply(frame)
+        _, thresh = cv2.threshold(fgmask, 150, 255, cv2.THRESH_BINARY)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if area > 1500:
+                x, y, w, h = cv2.boundingRect(contour)
+                if w > h and w > 50 and h > 50:
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    cv2.putText(frame, "Vehicle", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
