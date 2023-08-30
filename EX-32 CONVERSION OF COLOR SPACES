@@ -1,0 +1,16 @@
+import cv2
+def convert_color_spaces(image_path):
+    image = cv2.imread(image_path)
+    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    cv2.imshow('RGB Image', rgb_image)
+    cv2.waitKey(0)
+    grayscale_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2GRAY)
+    cv2.imshow('Grayscale Image', grayscale_image)
+    cv2.waitKey(0)
+    hsv_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2HSV)
+    cv2.imshow('HSV Image', hsv_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+if __name__ == "__main__":
+    image_path ="C:\\Users\\student\\Desktop\\lav cv\\image 3.jfif"
+    convert_color_spaces(image_path)
